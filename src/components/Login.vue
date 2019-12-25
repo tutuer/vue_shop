@@ -57,7 +57,7 @@ export default {
             this.$refs.longinFormRef.validate(async valid=>{
                 // console.log(valid)
                 if(!valid) return; 
-                // 与验证通过
+                // 预验证通过
                 const { data:res} = await this.$http.post('login',this.loginform)
                 if(res.meta.status !== 200) return this.$message.error('登陆失败')
                 this.$message.success('登陆成功')
