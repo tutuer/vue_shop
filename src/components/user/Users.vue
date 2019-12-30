@@ -39,7 +39,7 @@
             <!-- 删除 -->
             <el-button type="warning" icon="el-icon-delete" size="mini" @click="removeUserInfo(scope.row.id)"></el-button>
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-               <el-button type="info" icon="el-icon-setting" size="mini"></el-button>
+               <el-button type="info" icon="el-icon-setting" size="mini" @click="setDialogVisible(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -102,6 +102,32 @@
         <el-button type="primary" @click="editValidate">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 分配角色对话框 -->
+    <el-dialog
+    title="分配角色"
+    :visible.sync="dialogVisible"
+    width="30%" @close="closeDialogAll">
+    <div>
+      <p>用户姓名：{{userInfo.username}}</p>
+      <p>用户角色：{{userInfo.role_name}}</p>
+      <div>分配角色
+        <el-select v-model="valueid" placeholder="请选择">
+          <el-option
+            v-for="item in roleList"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </div>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="closeDialog()">确 定</el-button>
+    </span>
+  </el-dialog>
+
   </div>
 </template>
 
@@ -138,6 +164,14 @@ export default {
       editDialogVisible:false,
       // 根据id查询到的用户信息对象
       editForm:{},
+      // 控制分配角色对话框显示与隐藏
+      dialogVisible:false,
+      // 通过点击分配角色获取到的用户信息
+      userInfo:'',
+      // 角色列表
+      roleList:[],
+      // 选择的新角色id
+      valueid:'',
       // 添加用户校验规则
       addRuleForm:{
         username:'',
@@ -293,6 +327,39 @@ export default {
       }
       this.$message.success('删除用户成功')
       this.getuserList()
+    },
+
+    async setDialogVisible(userInfo){
+      this.userInfo = userInfo
+      this.dialogVisible = true
+
+      const {data:res} = await this.$http.get('roles')
+     
+      if(res.meta.status !==200){
+        return this.$message.error('获取角色列表失败')
+      }
+      this.roleList = res.data
+    
+      
+     
+    },
+// 点击按钮，分配角色
+    async closeDialog(){
+      if(!this.valueid){
+        return this.$message.error('分配角色失败')
+      }
+     
+      const {data:res} = await this.$http.put(`users/${this.userInfo.id}/role` , {rid:this.valueid})
+      
+      this.getuserList()
+      this.$message.success('分配角色成功')
+      this.dialogVisible = false
+
+    },
+
+// 关闭对话框时，选择框清空
+    closeDialogAll(){
+      this.valueid = ''
     }
     
     
@@ -302,6 +369,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.el-card{margin-top: 15px;}
 
 </style>
