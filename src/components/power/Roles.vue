@@ -14,14 +14,14 @@
             <el-table :data="rolesList" border stripe>
                 <el-table-column type="expand">
                     <template slot-scope="scope">
-                        <el-row :class="['border_bottom', i1 ===0 ? 'border_top': '' ,'rcenter']" v-for="(item1, i1) in scope.row.children" :key="item1.id">
+                        <el-row :class="['border_bottom', i1 === 0 ? 'border_top': '' ,'rcenter']" v-for="(item1, i1) in scope.row.children" :key="item1.id">
                             <!-- 渲染一级权限 -->
                             <el-col :span="5"><el-tag closable @close="removeTag(scope.row, item1.id)">{{item1.authName}}</el-tag><i class="el-icon-caret-right"></i></el-col>
                             <!-- 渲染二三级权限 -->
                             <el-col :span="19">
                                 <el-row v-for="(item2, i2) in item1.children" :key="item2.id">
                                     <!-- 二级权限 -->
-                                    <el-col :span="6" :class="[i2===0 ? '' : 'border_top' ,'rcenter']"><el-tag type="success" closable @close="removeTag(scope.row, item2.id)">{{item2.authName}}</el-tag><i class="el-icon-caret-right"></i></el-col>
+                                    <el-col :span="6" :class="[i2 === 0 ? '' : 'border_top' ,'rcenter']"><el-tag type="success" closable @close="removeTag(scope.row, item2.id)">{{item2.authName}}</el-tag><i class="el-icon-caret-right"></i></el-col>
                                     <!-- 三级权限 -->
                                     <el-col :span="18">
                                             <el-tag type="warning"  closable @close="removeTag(scope.row, item3.id)" v-for="(item3, i3) in item2.children" :key="item3.id">{{item3.authName}}</el-tag>                     
@@ -36,9 +36,9 @@
                 <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
                 <el-table-column label="操作">
                    <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit"></el-button>
-                        <el-button type="danger" icon="el-icon-delete"></el-button>
-                        <el-button type="warning" icon="el-icon-setting" @click="showSetDiolg(scope.row)"></el-button>
+                        <el-button type="primary" icon="el-icon-edit">编辑</el-button>
+                        <el-button type="danger" icon="el-icon-delete">删除</el-button>
+                        <el-button type="warning" icon="el-icon-setting" @click="showSetDiolg(scope.row)">分配权限</el-button>
                    </template>
                 </el-table-column>
             </el-table>
